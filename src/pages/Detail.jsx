@@ -27,15 +27,15 @@ export default function Detail() {
   const u = urgency(s.days)
   const steps = ['saved', 'preparing', 'submitted', 'awarded']
 
-  const start = () => { dispatch({ type: 'setStatus', id: s.id, status: 'preparing' }); notify('Application started'); docsRef.current?.scrollIntoView({ behavior: 'smooth' }) }
+  const start = () => { dispatch({ type: 'setStatus', id: s.id, status: 'preparing' }); notify('Let\u2019s go. Application started.'); docsRef.current?.scrollIntoView({ behavior: 'smooth' }) }
   const submit = () => {
     if (!ready) { notify(`Add ${missing.length} missing ${missing.length === 1 ? 'document' : 'documents'} first`); docsRef.current?.scrollIntoView({ behavior: 'smooth' }); return }
-    dispatch({ type: 'setStatus', id: s.id, status: 'submitted' }); notify('Marked as submitted')
+    dispatch({ type: 'setStatus', id: s.id, status: 'submitted' }); notify('Stamped and submitted. Fingers crossed.')
   }
   const pick = (doc) => { target.current = doc; file.current.click() }
   const onFile = (e) => {
     const f = e.target.files?.[0]
-    if (f) { dispatch({ type: 'upload', doc: target.current, name: f.name }); notify(`${DOCS[target.current].label} added to your vault`) }
+    if (f) { dispatch({ type: 'upload', doc: target.current, name: f.name }); notify(`Got it. ${DOCS[target.current].label} is in your vault.`) }
     e.target.value = ''
   }
 
@@ -47,7 +47,7 @@ export default function Detail() {
         <span className="notch top" /><span className="notch bottom" />
         <div className="flex flex-col md:flex-row">
           <div className="relative flex-1 p-6 md:p-8">
-            {status === 'awarded' && <span aria-hidden className="stamp absolute right-6 top-6 hidden rounded-lg border-[3px] border-forest px-4 py-1 font-display text-2xl font-extrabold text-forest sm:block">Awarded</span>}
+            {(status === 'awarded' || status === 'submitted') && <span aria-hidden className={`stamp absolute right-6 top-6 hidden rounded-lg border-[3px] px-4 py-1 font-display text-2xl font-extrabold sm:block ${status === 'awarded' ? 'border-forest text-forest' : 'border-primary text-primary'}`}>{status === 'awarded' ? 'Awarded' : 'Submitted'}</span>}
             <div className="mb-3 flex flex-wrap gap-2">
               <Chip tone={u === 'urgent' ? 'urgent' : 'neutral'}>{daysLabel(s.days)} · {dayMonth(s.deadline)}</Chip>
               <Chip>{s.kind}</Chip>
@@ -135,11 +135,11 @@ export default function Detail() {
           )}
           {(!status || status === 'saved') && m.eligible && <button onClick={start} className={buttonClass.primary + ' w-full'}>Start application</button>}
           {status === 'preparing' && <button onClick={submit} className={buttonClass.primary + ' w-full'}><Send size={16} />Mark as submitted</button>}
-          {status === 'submitted' && <button onClick={() => { dispatch({ type: 'setStatus', id: s.id, status: 'awarded' }); notify('Marked as awarded. Congratulations!') }} className={buttonClass.secondary + ' w-full'}>I received this award</button>}
-          {status === 'awarded' && <p className="rounded-lg bg-sage p-3 text-sm font-semibold text-forest">Awarded. Well done.</p>}
+          {status === 'submitted' && <button onClick={() => { dispatch({ type: 'setStatus', id: s.id, status: 'awarded' }); notify('You got it! Congratulations.', { confetti: true }) }} className={buttonClass.secondary + ' w-full'}>I received this award</button>}
+          {status === 'awarded' && <p className="rounded-lg bg-sage p-3 text-sm font-semibold text-forest">Awarded. You earned this one.</p>}
           {!m.eligible && <p className="text-sm text-muted">You can’t apply to this one with your current profile. Update your details if something has changed.</p>}
           {!status && m.eligible && <button onClick={() => { dispatch({ type: 'setStatus', id: s.id, status: 'saved' }); notify('Saved for later') }} className={buttonClass.secondary + ' w-full'}><Bookmark size={16} />Save for later</button>}
-          <button onClick={() => { downloadICS([s]); notify('Calendar file downloaded') }} className={buttonClass.ghost + ' w-full'}><CalendarPlus size={16} />Add deadline to calendar</button>
+          <button onClick={() => { downloadICS([s]); notify('Calendar file ready. This deadline will not sneak up on you.') }} className={buttonClass.ghost + ' w-full'}><CalendarPlus size={16} />Add deadline to calendar</button>
         </aside>
       </div>
     </div>

@@ -68,7 +68,7 @@ h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing
 
 /* One orchestrated moment: runway pins drop onto the line */
 @keyframes drop { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-.pin { animation: drop .5s cubic-bezier(.2,.8,.2,1) backwards; }
+.pin { animation: drop .7s cubic-bezier(.3,1.5,.5,1) backwards; }
 @keyframes stamp { 0% { opacity: 0; transform: scale(2.2) rotate(-14deg); } 60% { opacity: 1; transform: scale(.94) rotate(-9deg); } 100% { opacity: .9; transform: scale(1) rotate(-9deg); } }
 .stamp { animation: stamp .45s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -77,3 +77,19 @@ h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Playful layer */
+.btn-press { box-shadow: 0 3px 0 0 var(--color-primary-deep); transition: transform .08s ease, box-shadow .08s ease, background-color .15s ease; }
+.btn-press:hover { transform: translateY(-1px); box-shadow: 0 4px 0 0 var(--color-primary-deep); }
+.btn-press:active { transform: translateY(3px); box-shadow: 0 0 0 0 var(--color-primary-deep); }
+.seal { transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+.ticket:hover .seal, .seal:hover { transform: rotate(-12deg) scale(1.1); }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.07); } 100% { transform: scale(1); } }
+.pop { animation: pop .35s ease-out; transform-origin: left bottom; }
+.tilt { transform: rotate(-1.4deg); transition: transform .35s cubic-bezier(.3,1.5,.5,1); }
+.tilt:hover { transform: rotate(0deg); }
+@keyframes confetti { 0% { transform: translate(0, 0) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; } }
+.confetti { position: fixed; left: 50%; top: 38%; width: 9px; height: 15px; border-radius: 2px; pointer-events: none; z-index: 60; animation: confetti 1.5s cubic-bezier(.15,.7,.3,1) forwards; animation-delay: var(--d); }
+.dragging { transform: rotate(2.5deg) scale(1.02); box-shadow: 0 8px 0 0 var(--color-line-strong); opacity: .92; }
+@keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+.wiggle:hover { animation: wiggle .4s ease-in-out; }

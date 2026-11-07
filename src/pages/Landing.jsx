@@ -50,8 +50,9 @@ export default function Landing() {
           </div>
 
           {/* The live answer: a ticket you can tune */}
-          <div className="lg:col-span-6">
-            <div className="ticket">
+          <div className="relative lg:col-span-6">
+            <span className="absolute -top-4 right-6 z-10 rotate-3 rounded-full border-[1.5px] border-ink bg-saffron px-3.5 py-1 text-sm font-bold shadow-[2px_2px_0_0_#0E1B2C]">Live. Go on, slide it.</span>
+            <div className="ticket tilt">
               <div className="p-6 md:p-8">
                 <p className="text-sm font-semibold">Try it. Three answers, one number.</p>
 
@@ -81,7 +82,7 @@ export default function Landing() {
                 <div className="flex items-end justify-between gap-4">
                   <div>
                     <div className="text-sm text-muted">Within reach</div>
-                    <div className="num font-display text-5xl font-extrabold text-primary" aria-live="polite">{inr(shown)}</div>
+                    <div key={result.total} className="pop num font-display text-5xl font-extrabold text-primary" aria-live="polite">{inr(shown)}</div>
                   </div>
                   <div className="seal h-20 w-20 shrink-0 text-center font-display">
                     <div><div className="num text-2xl font-bold leading-none">{result.count}</div><div className="mt-1 text-[11px]">grants</div></div>

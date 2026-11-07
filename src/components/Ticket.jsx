@@ -13,7 +13,7 @@ export default function Ticket({ m, showChecks = 2 }) {
 
   const toggleSave = () => {
     dispatch({ type: 'setStatus', id: s.id, status: saved ? null : 'saved' })
-    notify(saved ? 'Removed from saved' : 'Saved for later')
+    notify(saved ? 'Removed from saved' : 'Saved. Future you says thanks.')
   }
 
   return (

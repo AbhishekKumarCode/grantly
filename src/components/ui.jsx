@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, TriangleAlert } from 'lucide-react'
 import { useStore } from '../store'
 
@@ -39,7 +39,7 @@ export function Chip({ tone = 'neutral', icon: Icon, children, className = '' })
 
 const btn = 'inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:bg-line disabled:text-faint disabled:border-line'
 export const buttonClass = {
-  primary: `${btn} bg-primary text-white hover:bg-primary-deep`,
+  primary: `${btn} btn-press bg-primary text-white hover:bg-primary`,
   secondary: `${btn} bg-white border-[1.5px] border-line-strong text-ink hover:border-ink`,
   ghost: `${btn} text-muted hover:text-primary px-3`,
 }
@@ -66,12 +66,25 @@ export function Check2({ ok, children }) {
   )
 }
 
+const CONF = ['#FFB627', '#2338C9', '#FF5A4E', '#CFE8D5', '#0E1B2C']
+export function Confetti() {
+  const pieces = useMemo(() => Array.from({ length: 44 }, (_, i) => ({
+    c: CONF[i % CONF.length], x: (Math.random() - 0.5) * 1000, y: -260 + Math.random() * 640,
+    r: (Math.random() - 0.5) * 1000, d: Math.random() * 0.18,
+  })), [])
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null
+  return <div aria-hidden>{pieces.map((p, i) => <span key={i} className="confetti" style={{ background: p.c, '--x': p.x + 'px', '--y': p.y + 'px', '--r': p.r + 'deg', '--d': p.d + 's' }} />)}</div>
+}
+
 export function Toast() {
   const { toast } = useStore()
   if (!toast) return null
   return (
     <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-4">
-      <div key={toast.k} className="toast pointer-events-auto rounded-lg bg-ink px-4 py-3 text-sm font-medium text-white shadow-lg">{toast.msg}</div>
+      {toast.confetti && <Confetti key={'c' + toast.k} />}
+      <div key={toast.k} className="toast pointer-events-auto flex items-center gap-2.5 rounded-lg bg-ink px-4 py-3 text-sm font-medium text-white shadow-lg">
+        <span aria-hidden className="h-2.5 w-2.5 shrink-0 rounded-full bg-saffron" />{toast.msg}
+      </div>
     </div>
   )
 }

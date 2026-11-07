@@ -31,7 +31,7 @@ const TITLES = { '/app': 'Dashboard', '/app/discover': 'Discover', '/app/tracker
 export function Logo({ to = '/' }) {
   return (
     <Link to={to} className="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-primary">
-      <span aria-hidden className="relative grid h-8 w-8 place-items-center rounded-lg bg-primary">
+      <span aria-hidden className="wiggle relative grid h-8 w-8 place-items-center rounded-lg bg-primary">
         <span className="h-3.5 w-3.5 rounded-full bg-saffron" />
       </span>
       Grantly

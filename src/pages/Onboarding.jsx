@@ -17,7 +17,7 @@ function Field({ label, children, hint }) {
 
 export default function Onboarding() {
   const nav = useNavigate()
-  const { profile, dispatch } = useStore()
+  const { profile, dispatch, notify } = useStore()
   const [step, setStep] = useState(1)
   const [p, setP] = useState({
     name: '', institution: '', course: '', field: 'engineering', level: 'ug', year: 2, cgpa: 8, state: 'MH',
@@ -33,7 +33,7 @@ export default function Onboarding() {
   const total = useCountUp(live.total, 500)
 
   const valid1 = p.name.trim() && p.course.trim()
-  const finish = () => { dispatch({ type: 'profile', patch: { ...p, name: p.name.trim() } }); nav('/app') }
+  const finish = () => { dispatch({ type: 'profile', patch: { ...p, name: p.name.trim() } }); notify(`You are in, ${p.name.trim().split(' ')[0]}. Let\u2019s go find your money.`, { confetti: true }); nav('/app') }
   const next = () => (step < 3 ? setStep(step + 1) : finish())
   const titles = ['Your studies', 'Your background', 'What you need most']
 
@@ -65,6 +65,7 @@ export default function Onboarding() {
         <div className="grid items-start gap-8 lg:grid-cols-12">
           <section className="lg:col-span-7">
             <h1 className="text-3xl font-bold">{titles[step - 1]}</h1>
+            <p className="mt-1 text-muted">{['Quick and painless. Promise.', 'Halfway there. This part unlocks the big ones.', 'Last one. Then the good part.'][step - 1]}</p>
             <form onSubmit={(e) => { e.preventDefault(); next() }} className="mt-6 space-y-6 rounded-2xl border border-line-strong bg-white p-6 md:p-8">
               {step === 1 && (<>
                 <Field label="Your name"><input className={input} value={p.name} onChange={(e) => set({ name: e.target.value })} placeholder="e.g. Aarav Patel" autoComplete="name" /></Field>

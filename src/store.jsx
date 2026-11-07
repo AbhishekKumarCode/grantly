@@ -50,7 +50,7 @@ export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, null, load)
   const [toast, setToast] = useState(null)
   useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify(state)) } catch { /* private mode */ } }, [state])
-  const notify = useCallback((msg) => { setToast({ msg, k: Date.now() }) }, [])
+  const notify = useCallback((msg, o) => { setToast({ msg, k: Date.now(), ...o }) }, [])
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(null), 2600); return () => clearTimeout(t) }, [toast])
 
   const matches = useMemo(() => (state.profile ? matchAll(state.profile) : []), [state.profile])

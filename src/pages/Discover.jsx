@@ -60,7 +60,7 @@ export default function Discover() {
 
       <div className="mt-6 space-y-4">
         {rows.length === 0
-          ? <Empty title="No scholarships match these filters" body="Try a longer deadline window or a lower minimum award."><button className="h-11 rounded-lg border-[1.5px] border-line-strong bg-white px-5 text-sm font-semibold" onClick={() => { setQ(''); setKind('all'); setAmount(0); setWithin(0) }}>Clear filters</button></Empty>
+          ? <Empty title="Nothing here. We looked twice." body="Try a longer deadline window or a lower minimum award."><button className="h-11 rounded-lg border-[1.5px] border-line-strong bg-white px-5 text-sm font-semibold" onClick={() => { setQ(''); setKind('all'); setAmount(0); setWithin(0) }}>Clear filters</button></Empty>
           : rows.map((m) => <Ticket key={m.s.id} m={m} showChecks={m.eligible ? 2 : 2} />)}
       </div>
     </div>

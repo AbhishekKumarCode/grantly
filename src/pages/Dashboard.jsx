@@ -40,10 +40,10 @@ export default function Dashboard() {
           </h1>
           <p className="mt-3 max-w-xl text-lg text-muted">
             across {eligible.length} scholarships you qualify for.{' '}
-            {next10.length > 0 ? <>{next10.length} close in the next 10 days.</> : 'Nothing closes in the next 10 days.'}
+            {next10.length > 0 ? <>{next10.length} close in the next 10 days.</> : 'Nothing closes in the next 10 days.'}{awarded > 0 && <> You have already banked <strong className="num text-forest">{inrShort(awarded)}</strong>. Let\u2019s add more.</>}
           </p>
         </div>
-        <button className={buttonClass.secondary} onClick={() => { downloadICS(open.map((m) => m.s)); notify('Calendar file downloaded') }}>
+        <button className={buttonClass.secondary} onClick={() => { downloadICS(open.map((m) => m.s)); notify('Calendar file ready. Deadlines now live on your phone.') }}>
           <CalendarPlus size={16} />Add deadlines to calendar
         </button>
       </section>

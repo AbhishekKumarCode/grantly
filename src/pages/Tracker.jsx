@@ -18,7 +18,7 @@ const COLS = [
 export default function Tracker() {
   const { apps, vault, dispatch, notify } = useStore()
   const [over, setOver] = useState(null)
-  const move = (id, status) => { dispatch({ type: 'setStatus', id, status }); notify(`Moved to ${COLS.find((c) => c[0] === status)[1]}`) }
+  const move = (id, status) => { dispatch({ type: 'setStatus', id, status }); notify(status === 'awarded' ? 'Awarded! Go celebrate.' : `Moved to ${COLS.find((c) => c[0] === status)[1]}`, status === 'awarded' ? { confetti: true } : undefined) }
   const items = Object.entries(apps).map(([id, a]) => ({ s: BY_ID[id], ...a })).filter((x) => x.s)
   const total = items.filter((i) => i.status === 'awarded').reduce((n, i) => n + i.s.amount, 0)
   const live = items.filter((i) => ['saved', 'preparing'].includes(i.status))
@@ -30,7 +30,7 @@ export default function Tracker() {
           <h1 className="text-4xl font-extrabold">Tracker</h1>
           <p className="mt-2 text-muted">{items.length} applications{total > 0 && <> · <span className="num font-semibold text-forest">{inrShort(total)}</span> awarded</>}</p>
         </div>
-        <button className={buttonClass.secondary} disabled={!live.length} onClick={() => { downloadICS(live.map((i) => i.s)); notify('Calendar file downloaded') }}><CalendarPlus size={16} />Add open deadlines to calendar</button>
+        <button className={buttonClass.secondary} disabled={!live.length} onClick={() => { downloadICS(live.map((i) => i.s)); notify('Calendar file ready. Deadlines now live on your phone.') }}><CalendarPlus size={16} />Add open deadlines to calendar</button>
       </div>
 
       <div className="mt-8 flex snap-x gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:overflow-visible">
@@ -45,11 +45,11 @@ export default function Tracker() {
                 <h2 className="text-lg font-bold">{title}</h2><span className="num text-sm text-faint">{col.length}</span>
               </div>
               <div className="space-y-3">
-                {col.length === 0 && <p className="px-1.5 py-4 text-sm text-faint">{hint} Drag a card here.</p>}
+                {col.length === 0 && <p className="px-1.5 py-4 text-sm text-faint">{hint} Drop a card here.</p>}
                 {col.map(({ s }) => {
                   const miss = missingDocs(s, vault), done = s.docs.length - miss.length
                   return (
-                    <article key={s.id} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', s.id)}
+                    <article key={s.id} draggable onDragStart={(e) => { e.dataTransfer.setData('text/plain', s.id); e.currentTarget.classList.add('dragging') }} onDragEnd={(e) => e.currentTarget.classList.remove('dragging')}
                       className="cursor-grab rounded-xl border border-line-strong bg-white p-4 active:cursor-grabbing">
                       <Link to={`/app/s/${s.id}`} className="block text-[15px] font-semibold leading-snug hover:text-primary">{s.name}</Link>
                       <div className="mt-2 flex items-center justify-between">

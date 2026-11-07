@@ -22,7 +22,7 @@ export default function Vault() {
   const pick = (id) => { target.current = id; file.current.click() }
   const change = (e) => {
     const f = e.target.files?.[0]
-    if (f) { dispatch({ type: 'upload', doc: target.current, name: f.name }); notify(`${DOCS[target.current].label} added`) }
+    if (f) { dispatch({ type: 'upload', doc: target.current, name: f.name }); notify(`Got it. ${DOCS[target.current].label} is safe in your vault.`) }
     e.target.value = ''
   }
 
@@ -37,7 +37,7 @@ export default function Vault() {
         {r.file?.expiresIn != null && r.file.expiresIn <= 30 && <Chip tone="urgent">Expires in {r.file.expiresIn} days</Chip>}
         {r.users.length > 0 && <Chip tone={r.file ? 'neutral' : 'gold'}>{r.file ? `Used by ${r.users.length}` : `Unlocks ${r.users.length} · up to ${inrShort(r.users.reduce((n, m) => n + m.s.amount, 0))}`}</Chip>}
         {r.file
-          ? <button aria-label={`Remove ${r.label}`} onClick={() => { dispatch({ type: 'removeDoc', doc: r.id }); notify('Document removed') }} className="rounded-lg p-2 text-faint hover:bg-paper hover:text-crimson"><Trash2 size={16} /></button>
+          ? <button aria-label={`Remove ${r.label}`} onClick={() => { dispatch({ type: 'removeDoc', doc: r.id }); notify('Removed. Upload a fresh one any time.') }} className="rounded-lg p-2 text-faint hover:bg-paper hover:text-crimson"><Trash2 size={16} /></button>
           : <button onClick={() => pick(r.id)} className={buttonClass.primary + ' h-9 px-3.5'}><Upload size={14} />Upload</button>}
       </div>
     </li>
