@@ -1,0 +1,77 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/inter";
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-paper: #F6F8FB;
+  --color-ink: #0E1B2C;
+  --color-primary: #2338C9;
+  --color-primary-deep: #001CAA;
+  --color-primary-tint: #DFE0FF;
+  --color-saffron: #FFB627;
+  --color-saffron-tint: #FFF3D6;
+  --color-sage: #CFE8D5;
+  --color-forest: #1B5E20;
+  --color-coral: #FF5A4E;
+  --color-coral-tint: #FFE5E3;
+  --color-crimson: #7A130C;
+  --color-line: #E2E8F0;
+  --color-line-strong: #CBD5E1;
+  --color-muted: #454655;
+  --color-faint: #5F6B7A;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+.num { font-variant-numeric: tabular-nums; }
+
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 6px; }
+::selection { background: var(--color-primary-tint); }
+
+/* Ticket stub: the one recurring shape in the product */
+.ticket {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.ticket:hover { transform: translateY(-2px); box-shadow: 0 4px 0 0 var(--color-line-strong); }
+.ticket .stub { border-top: 1px dashed var(--color-line-strong); }
+.notch { display: none; }
+@media (min-width: 768px) {
+  .ticket .stub { border-top: 0; border-left: 1px dashed var(--color-line-strong); }
+  .notch {
+    display: block; position: absolute; right: 183px; width: 18px; height: 18px;
+    background: var(--color-paper); border-radius: 9999px; z-index: 2;
+  }
+  .notch.top { top: -9px; border-bottom: 1px solid var(--color-line-strong); }
+  .notch.bottom { bottom: -9px; border-top: 1px solid var(--color-line-strong); }
+}
+
+/* Seal: saffron stamp */
+.seal {
+  display: grid; place-items: center; border-radius: 9999px;
+  background: var(--color-saffron); color: var(--color-ink);
+  border: 1.5px solid rgba(14, 27, 44, .85);
+  box-shadow: 2px 2px 0 0 rgba(14, 27, 44, .85);
+}
+
+/* One orchestrated moment: runway pins drop onto the line */
+@keyframes drop { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+.pin { animation: drop .5s cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.toast { animation: rise .2s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
