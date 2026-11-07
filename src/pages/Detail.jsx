@@ -8,6 +8,7 @@ import { evaluate, missingDocs, INCOME } from '../lib/engine'
 import { Chip, Seal, Check2, buttonClass } from '../components/ui'
 import { inr, dayMonth, daysLabel, urgency } from '../lib/format'
 import { downloadICS } from '../lib/ics'
+import { checkFile, FILE_ACCEPT } from '../lib/safeFile'
 
 export default function Detail() {
   const { id } = useParams()
@@ -34,8 +35,9 @@ export default function Detail() {
   }
   const pick = (doc) => { target.current = doc; file.current.click() }
   const onFile = (e) => {
-    const f = e.target.files?.[0]
-    if (f) { dispatch({ type: 'upload', doc: target.current, name: f.name }); notify(`Got it. ${DOCS[target.current].label} is in your vault.`) }
+    const r = checkFile(e.target.files?.[0])
+    if (!r.ok) notify(r.msg)
+    else { dispatch({ type: 'upload', doc: target.current, name: r.name }); notify(`Got it. ${DOCS[target.current].label} is in your vault.`) }
     e.target.value = ''
   }
 
@@ -110,7 +112,7 @@ export default function Detail() {
                 )
               })}
             </ul>
-            <input ref={file} type="file" className="sr-only" aria-hidden tabIndex={-1} onChange={onFile} />
+            <input ref={file} type="file" accept={FILE_ACCEPT} className="sr-only" aria-hidden tabIndex={-1} onChange={onFile} />
           </section>
 
           <section aria-labelledby="how">

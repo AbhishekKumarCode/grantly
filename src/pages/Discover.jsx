@@ -39,7 +39,7 @@ export default function Discover() {
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <div className="relative min-w-[220px] flex-1 sm:max-w-sm">
           <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint" aria-hidden />
-          <input aria-label="Search scholarships" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or provider"
+          <input aria-label="Search scholarships" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or provider" maxLength={80}
             className="h-10 w-full rounded-lg border-[1.5px] border-line-strong bg-white pl-9 pr-3 text-sm outline-none focus:border-primary" />
         </div>
         <select aria-label="Type" className={sel} value={kind} onChange={(e) => setKind(e.target.value)}>{kinds.map((k) => <option key={k} value={k}>{k === 'all' ? 'Any type' : k}</option>)}</select>

@@ -9,6 +9,9 @@ import { profileStrength, missingDocs } from '../lib/engine'
 import { DOCS } from '../data/docs'
 import { downloadICS } from '../lib/ics'
 
+const HOUR = new Date().getHours()
+const GREETING = HOUR < 12 ? 'Good morning' : HOUR < 18 ? 'Good afternoon' : 'Good evening'
+
 export default function Dashboard() {
   const { profile, matches, apps, vault, notify } = useStore()
   const eligible = matches.filter((m) => m.eligible).sort((a, b) => b.score - a.score)
@@ -27,8 +30,7 @@ export default function Dashboard() {
   const needed = new Set(); open.forEach((m) => m.s.docs.forEach((d) => needed.add(d)))
   const neededDocs = needed.size, readyDocs = [...needed].filter((d) => vault[d]).length
   const awarded = Object.entries(apps).filter(([, a]) => a.status === 'awarded').reduce((n, [id]) => n + (matches.find((m) => m.s.id === id)?.s.amount ?? 0), 0)
-  const hour = new Date().getHours()
-  const hello = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+  const hello = GREETING
 
   return (
     <div className="space-y-14">

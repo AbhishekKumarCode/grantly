@@ -2,7 +2,7 @@ import { cloneElement, useId, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { Logo, Footer } from '../components/Layout'
-import { buttonClass, Seal, useCountUp } from '../components/ui'
+import { buttonClass, useCountUp } from '../components/ui'
 import { useStore } from '../store'
 import { FIELDS, LEVELS, INCOME, CATEGORIES, STATES, FLAGS, GOALS, matchAll, totalReach } from '../lib/engine'
 import { inr, inrShort } from '../lib/format'
@@ -69,15 +69,15 @@ export default function Onboarding() {
             <p className="mt-1 text-muted">{['Quick and painless. Promise.', 'Halfway there. This part unlocks the big ones.', 'Last one. Then the good part.'][step - 1]}</p>
             <form onSubmit={(e) => { e.preventDefault(); next() }} className="mt-6 space-y-6 rounded-2xl border border-line-strong bg-white p-6 md:p-8">
               {step === 1 && (<>
-                <Field label="Your name"><input className={input} value={p.name} onChange={(e) => set({ name: e.target.value })} placeholder="e.g. Aarav Patel" autoComplete="name" /></Field>
+                <Field label="Your name"><input className={input} value={p.name} onChange={(e) => set({ name: e.target.value })} placeholder="e.g. Aarav Patel" maxLength={80} autoComplete="name" /></Field>
                 <Field label="Course" hint="Many grants are limited to specific programmes.">
-                  <input className={input} value={p.course} onChange={(e) => set({ course: e.target.value })} placeholder="e.g. B.Tech Computer Science" />
+                  <input className={input} value={p.course} onChange={(e) => set({ course: e.target.value })} placeholder="e.g. B.Tech Computer Science" maxLength={80} />
                 </Field>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field label="Field of study"><select className={input} value={p.field} onChange={(e) => set({ field: e.target.value })}>{FIELDS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}</select></Field>
                   <Field label="Level"><select className={input} value={p.level} onChange={(e) => set({ level: e.target.value })}>{LEVELS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}</select></Field>
                 </div>
-                <Field label="College or university"><input className={input} value={p.institution} onChange={(e) => set({ institution: e.target.value })} placeholder="e.g. VJTI Mumbai" /></Field>
+                <Field label="College or university"><input className={input} value={p.institution} onChange={(e) => set({ institution: e.target.value })} placeholder="e.g. VJTI Mumbai" maxLength={80} /></Field>
                 <div>
                   <label htmlFor="cg" className="mb-1.5 flex justify-between text-[15px] font-semibold"><span>CGPA (out of 10)</span><span className="num font-display text-lg">{(+p.cgpa).toFixed(1)}</span></label>
                   <input id="cg" type="range" min="5" max="10" step="0.1" value={p.cgpa} onChange={(e) => set({ cgpa: +e.target.value })} className="w-full accent-primary" />

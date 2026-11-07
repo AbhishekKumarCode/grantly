@@ -1,13 +1,14 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import Layout from './components/Layout'
 import Landing from './pages/Landing'
-import Onboarding from './pages/Onboarding'
-import Dashboard from './pages/Dashboard'
-import Discover from './pages/Discover'
-import Detail from './pages/Detail'
-import Tracker from './pages/Tracker'
-import Vault from './pages/Vault'
+
+const Onboarding = lazy(() => import('./pages/Onboarding'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Discover = lazy(() => import('./pages/Discover'))
+const Detail = lazy(() => import('./pages/Detail'))
+const Tracker = lazy(() => import('./pages/Tracker'))
+const Vault = lazy(() => import('./pages/Vault'))
 
 function ScrollTop() {
   const { pathname } = useLocation()
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <>
       <ScrollTop />
+      <Suspense fallback={<div role="status" className="grid min-h-[40vh] place-items-center text-sm text-muted">Loading…</div>}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/start" element={<Onboarding />} />
@@ -31,6 +33,7 @@ export default function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </>
   )
 }

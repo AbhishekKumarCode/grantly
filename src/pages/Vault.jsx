@@ -5,6 +5,7 @@ import { useStore } from '../store'
 import { DOCS } from '../data/docs'
 import { Chip, buttonClass } from '../components/ui'
 import { inrShort } from '../lib/format'
+import { checkFile, FILE_ACCEPT } from '../lib/safeFile'
 
 export default function Vault() {
   const { vault, matches, apps, dispatch, notify } = useStore()
@@ -21,8 +22,9 @@ export default function Vault() {
 
   const pick = (id) => { target.current = id; file.current.click() }
   const change = (e) => {
-    const f = e.target.files?.[0]
-    if (f) { dispatch({ type: 'upload', doc: target.current, name: f.name }); notify(`Got it. ${DOCS[target.current].label} is safe in your vault.`) }
+    const r = checkFile(e.target.files?.[0])
+    if (!r.ok) notify(r.msg)
+    else { dispatch({ type: 'upload', doc: target.current, name: r.name }); notify(`Got it. ${DOCS[target.current].label} is safe in your vault.`) }
     e.target.value = ''
   }
 
@@ -47,7 +49,7 @@ export default function Vault() {
     <div>
       <h1 className="text-4xl font-extrabold">Vault</h1>
       <p className="mt-2 max-w-xl text-muted">Upload each document once. Grantly reuses it for every application that needs it.</p>
-      <input ref={file} type="file" className="sr-only" aria-hidden tabIndex={-1} onChange={change} />
+      <input ref={file} type="file" accept={FILE_ACCEPT} className="sr-only" aria-hidden tabIndex={-1} onChange={change} />
 
       {missing.length > 0 && (
         <section className="mt-8" aria-labelledby="miss">

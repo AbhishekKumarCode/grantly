@@ -23,7 +23,16 @@ const sampleState = () => ({
 })
 
 function load() {
-  try { return { ...empty, ...JSON.parse(localStorage.getItem(KEY)) } } catch { return empty }
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY))
+    const obj = (v) => v && typeof v === 'object' && !Array.isArray(v)
+    return {
+      profile: obj(d?.profile) ? d.profile : null,
+      saved: Array.isArray(d?.saved) ? d.saved.filter((x) => typeof x === 'string') : [],
+      apps: obj(d?.apps) ? d.apps : {},
+      vault: obj(d?.vault) ? d.vault : {},
+    }
+  } catch { return empty }
 }
 
 function reducer(state, a) {

@@ -44,7 +44,7 @@ export default function Palette({ open, onClose }) {
         <div className="flex items-center gap-3 border-b border-line px-4">
           <Search size={18} className="text-faint" aria-hidden />
           <input ref={input} autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search scholarships or jump to a page"
-            aria-label="Search" className="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-faint" />
+            aria-label="Search" maxLength={80} className="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-faint" />
           <kbd className="rounded border border-line-strong px-1.5 py-0.5 text-[11px] text-faint">Esc</kbd>
         </div>
         <ul className="max-h-[50vh] overflow-y-auto p-2" role="listbox">
