@@ -10,7 +10,8 @@ const LEVEL_GAP = 66
 const LEVELS = 3
 const BASE = LEVELS * LEVEL_GAP + 30   // y of the line
 
-export default function Runway({ items, apps }) {
+export default function Runway({ items, apps = {}, interactive = true }) {
+  const Tag = interactive ? Link : 'div'
   const box = useRef(null)
   const [w, setW] = useState(1000)
   useEffect(() => {
@@ -33,8 +34,28 @@ export default function Runway({ items, apps }) {
   })
   const ticks = [0, 10, 20, 30, 40, 50, 60]
 
+  const mobile = (
+    <ol className="relative space-y-4 border-l-2 border-line-strong pl-6 md:hidden">
+      {list.map((m) => {
+        const u = urgency(m.s.days)
+        const done = ['submitted', 'awarded'].includes(apps[m.s.id]?.status)
+        return (
+          <li key={m.s.id} className="relative">
+            <span className={`absolute -left-[31px] top-1.5 h-3 w-3 rounded-full ring-4 ring-paper ${done ? 'bg-forest' : u === 'urgent' ? 'bg-coral' : u === 'soon' ? 'bg-primary' : 'bg-ink'}`} />
+            <Tag {...(interactive ? { to: `/app/s/${m.s.id}` } : {})} className="flex items-baseline justify-between gap-3">
+              <span className="min-w-0"><span className="num block text-xs text-faint">{dayMonth(m.s.deadline)} · {m.s.days}d{done ? ' · done' : ''}</span><span className="block truncate text-sm font-semibold">{m.s.name}</span></span>
+              <span className="num shrink-0 font-display font-bold text-primary">{inrShort(m.s.amount)}</span>
+            </Tag>
+          </li>
+        )
+      })}
+    </ol>
+  )
+
   return (
-    <div className="overflow-x-auto pb-2">
+    <>
+    {mobile}
+    <div className="hidden overflow-x-auto pb-2 md:block">
       <div ref={box} className="relative min-w-[820px]" style={{ height: BASE + 40 }} role="list" aria-label="Deadlines over the next 60 days">
         <div className="absolute inset-x-0 border-t-2 border-ink" style={{ top: BASE }} />
         {ticks.map((d) => (
@@ -51,7 +72,7 @@ export default function Runway({ items, apps }) {
           const color = done ? 'bg-forest' : u === 'urgent' ? 'bg-coral' : u === 'soon' ? 'bg-primary' : 'bg-ink'
           const top = lv * LEVEL_GAP
           return (
-            <Link key={m.s.id} role="listitem" to={`/app/s/${m.s.id}`} title={`${m.s.name}: ${m.s.days} days left`}
+            <Tag key={m.s.id} role="listitem" {...(interactive ? { to: `/app/s/${m.s.id}` } : {})} title={`${m.s.name}: ${m.s.days} days left`}
               className="pin group absolute block outline-offset-4 hover:z-20 focus-visible:z-20"
               style={{ left: x, top, width: TAG_W, height: BASE - top, animationDelay: `${250 + i * 90}ms` }}>
               {/* stem sits on the pin's date, tag hangs to its right */}
@@ -62,10 +83,11 @@ export default function Runway({ items, apps }) {
                 <div className="truncate text-[11px] font-medium leading-tight">{m.s.name.replace(/ (Scholarship|Grant|Fellowship|Award|Endowment)$/, '')}</div>
                 <div className="num text-[11px] leading-tight text-faint">{dayMonth(m.s.deadline)}{done ? ' · done' : ` · ${m.s.days}d`}</div>
               </div>
-            </Link>
+            </Tag>
           )
         })}
       </div>
     </div>
+    </>
   )
 }

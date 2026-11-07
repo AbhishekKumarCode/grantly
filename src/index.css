@@ -69,6 +69,8 @@ h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing
 /* One orchestrated moment: runway pins drop onto the line */
 @keyframes drop { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
 .pin { animation: drop .5s cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes stamp { 0% { opacity: 0; transform: scale(2.2) rotate(-14deg); } 60% { opacity: 1; transform: scale(.94) rotate(-9deg); } 100% { opacity: .9; transform: scale(1) rotate(-9deg); } }
+.stamp { animation: stamp .45s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .toast { animation: rise .2s ease-out; }
 

@@ -24,6 +24,9 @@ export default function Dashboard() {
   const counts = {}
   open.forEach((m) => missingDocs(m.s, vault).forEach((d) => { counts[d] = (counts[d] || []).concat(m) }))
   const topDoc = Object.entries(counts).sort((a, b) => b[1].length - a[1].length)[0]
+  const needed = new Set(); open.forEach((m) => m.s.docs.forEach((d) => needed.add(d)))
+  const neededDocs = needed.size, readyDocs = [...needed].filter((d) => vault[d]).length
+  const awarded = Object.entries(apps).filter(([, a]) => a.status === 'awarded').reduce((n, [id]) => n + (matches.find((m) => m.s.id === id)?.s.amount ?? 0), 0)
   const hour = new Date().getHours()
   const hello = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
@@ -44,6 +47,21 @@ export default function Dashboard() {
           <CalendarPlus size={16} />Add deadlines to calendar
         </button>
       </section>
+
+      <dl className="grid grid-cols-2 gap-y-6 border-y border-line py-6 sm:grid-cols-4">
+        {[
+          ['Open scholarships', open.length, 'you qualify for'],
+          ['In progress', inProgress, inProgress === 1 ? 'application' : 'applications'],
+          ['Documents ready', `${readyDocs}/${neededDocs}`, 'for your open list'],
+          ['Awarded so far', inrShort(awarded) , 'money secured'],
+        ].map(([k, v, sub], i) => (
+          <div key={k} className={`px-0 sm:px-6 ${i > 0 ? 'sm:border-l sm:border-line' : 'sm:pl-0'}`}>
+            <dt className="text-sm text-muted">{k}</dt>
+            <dd className="num mt-1 font-display text-3xl font-bold">{v}</dd>
+            <dd className="text-xs text-faint">{sub}</dd>
+          </div>
+        ))}
+      </dl>
 
       <section aria-labelledby="runway">
         <div className="mb-2 flex items-baseline justify-between">

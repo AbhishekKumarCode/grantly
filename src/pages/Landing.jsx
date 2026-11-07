@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { Logo, Footer } from '../components/Layout'
 import { buttonClass, useCountUp } from '../components/ui'
-import { FIELDS, INCOME, matchAll, totalReach } from '../lib/engine'
+import Runway from '../components/Runway'
+import { FIELDS, INCOME, SAMPLE_PROFILE, matchAll, totalReach } from '../lib/engine'
 import { inr } from '../lib/format'
 import { useStore } from '../store'
 
@@ -22,6 +23,7 @@ export default function Landing() {
   }, [field, cgpa, income])
   const shown = useCountUp(result.total, 600)
 
+  const preview = useMemo(() => matchAll(SAMPLE_PROFILE).filter((m) => m.eligible), [])
   const sample = () => { dispatch({ type: 'sample' }); nav('/app') }
 
   return (
@@ -85,11 +87,17 @@ export default function Landing() {
                     <div><div className="num text-2xl font-bold leading-none">{result.count}</div><div className="mt-1 text-[11px]">grants</div></div>
                   </div>
                 </div>
-                <p className="mt-3 text-sm text-muted">A cautious estimate. Add your state, category and background to unlock more.</p>
+                <p className="mt-3 text-sm text-muted">{result.count === 0 ? 'No matches with these answers. Try a lower income range or a different field.' : 'A cautious estimate. Add your state, category and background to unlock more.'}</p>
               </div>
             </div>
           </div>
         </div>
+
+        <section className="mt-24" aria-labelledby="line">
+          <h2 id="line" className="max-w-xl text-3xl font-bold md:text-4xl">Every deadline, on one line.</h2>
+          <p className="mt-2 max-w-lg text-muted">Each pin is a scholarship you qualify for, placed on the day it closes and sized by what it pays. Here is a sample student's next 60 days.</p>
+          <div className="mt-8 rounded-2xl border border-line-strong bg-white p-6"><Runway items={preview} interactive={false} /></div>
+        </section>
 
         <section className="mt-24 grid gap-10 border-t border-line pt-12 md:grid-cols-3" aria-label="How it works">
           {[

@@ -1,10 +1,10 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { ArrowLeft, Upload, Check, CalendarPlus, Clock, Send, Bookmark } from 'lucide-react'
 import { useStore } from '../store'
 import { BY_ID } from '../data/scholarships'
 import { DOCS } from '../data/docs'
-import { evaluate, missingDocs } from '../lib/engine'
+import { evaluate, missingDocs, INCOME } from '../lib/engine'
 import { Chip, Seal, Check2, buttonClass } from '../components/ui'
 import { inr, dayMonth, daysLabel, urgency } from '../lib/format'
 import { downloadICS } from '../lib/ics'
@@ -13,12 +13,14 @@ export default function Detail() {
   const { id } = useParams()
   const { profile, apps, vault, dispatch, notify } = useStore()
   const s = BY_ID[id]
+  const [wi, setWi] = useState(null)
   const docsRef = useRef(null)
   const file = useRef(null)
   const target = useRef(null)
   if (!s) return <Navigate to="/app/discover" replace />
 
   const m = evaluate(s, profile)
+  const alt = wi ? evaluate(s, { ...profile, ...wi }) : null
   const status = apps[s.id]?.status
   const missing = missingDocs(s, vault)
   const ready = missing.length === 0
@@ -44,7 +46,8 @@ export default function Detail() {
       <header className="ticket mt-4">
         <span className="notch top" /><span className="notch bottom" />
         <div className="flex flex-col md:flex-row">
-          <div className="flex-1 p-6 md:p-8">
+          <div className="relative flex-1 p-6 md:p-8">
+            {status === 'awarded' && <span aria-hidden className="stamp absolute right-6 top-6 hidden rounded-lg border-[3px] border-forest px-4 py-1 font-display text-2xl font-extrabold text-forest sm:block">Awarded</span>}
             <div className="mb-3 flex flex-wrap gap-2">
               <Chip tone={u === 'urgent' ? 'urgent' : 'neutral'}>{daysLabel(s.days)} · {dayMonth(s.deadline)}</Chip>
               <Chip>{s.kind}</Chip>
@@ -66,6 +69,24 @@ export default function Detail() {
             <h2 id="why" className="text-2xl font-bold">{m.eligible ? 'Why you match' : 'Why you don’t qualify yet'}</h2>
             <ul className="mt-4 space-y-3">{m.checks.map((c, i) => <Check2 key={i} ok={c.ok}>{c.text}</Check2>)}</ul>
             <p className="mt-5 max-w-prose leading-relaxed text-muted">{s.about}</p>
+            {!m.eligible && (s.c.minCgpa != null || s.c.maxIncome != null) && (
+              <div className="mt-6 rounded-2xl border border-line-strong bg-white p-5">
+                <h3 className="text-lg font-bold">What if your numbers were different?</h3>
+                <p className="mt-0.5 text-sm text-muted">Try a CGPA or income range to see when you would qualify. This does not change your profile.</p>
+                {s.c.minCgpa != null && (
+                  <div className="mt-4">
+                    <label htmlFor="wi-cgpa" className="flex justify-between text-sm font-medium"><span>CGPA</span><span className="num font-display text-base font-bold">{(wi?.cgpa ?? profile.cgpa).toFixed(1)}</span></label>
+                    <input id="wi-cgpa" type="range" min="5" max="10" step="0.1" value={wi?.cgpa ?? profile.cgpa} onChange={(e) => setWi({ ...wi, cgpa: +e.target.value })} className="mt-1 w-full accent-primary" />
+                  </div>
+                )}
+                {s.c.maxIncome != null && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {INCOME.map((i) => { const on = (wi?.income ?? profile.income) === i.id; return <button key={i.id} aria-pressed={on} onClick={() => setWi({ ...wi, income: i.id })} className={`rounded-full border-[1.5px] px-3.5 py-1.5 text-sm font-medium ${on ? 'border-primary bg-primary text-white' : 'border-line-strong bg-white hover:border-ink'}`}>{i.label}</button> })}
+                  </div>
+                )}
+                {alt && <p role="status" className={`mt-4 rounded-lg px-3 py-2 text-sm font-semibold ${alt.eligible ? 'bg-sage text-forest' : 'bg-coral-tint text-crimson'}`}>{alt.eligible ? 'With these numbers you would qualify for this scholarship.' : 'Still not enough. Other criteria are not met.'}</p>}
+              </div>
+            )}
           </section>
 
           <section ref={docsRef} aria-labelledby="need" className="scroll-mt-24">
