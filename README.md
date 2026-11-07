@@ -205,6 +205,8 @@ src/
 - **Responsive.** Checked for horizontal overflow on every page at 360, 390, 768 and 1024 px. The Tracker board scrolls sideways inside itself on small screens.
 - **Accessible.** Visible keyboard focus, labelled controls, dialog and live-region semantics, keyboard alternatives for drag and drop, AA contrast.
 - **Tested.** The main flows were click-tested end to end in headless Chrome: onboarding, applying, uploading, tracker moves (select and drag), filters, calendar download, command palette and persistence across reloads.
+- **Unit tests.** `npm test` runs 16 Vitest tests for the matching engine (eligibility, reasons, scoring, totals), document tracking, formatting and upload validation. `npm run check` runs lint, tests and a production build.
+- **Secure by default.** A strict Content-Security-Policy and other security headers ship in `vercel.json`. Uploads are limited to PDF, image and Word files up to 5 MB with sanitised names, text inputs have length limits, and saved data is validated before use. React escapes all rendered text, and there is no `dangerouslySetInnerHTML`. `npm audit` reports 0 vulnerabilities.
 
 ## 🤝 Honest notes
 
