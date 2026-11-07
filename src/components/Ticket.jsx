@@ -40,12 +40,18 @@ export default function Ticket({ m, showChecks = 2 }) {
           </ul>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Link to={`/app/s/${s.id}`} className={buttonClass.primary}>
-              {status && status !== 'saved' ? 'Continue application' : 'Start application'}<ArrowRight size={16} />
-            </Link>
-            <button onClick={toggleSave} aria-pressed={saved} className={buttonClass.secondary}>
-              {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}{saved ? 'Saved' : 'Save for later'}
-            </button>
+            {eligible ? (
+              <>
+                <Link to={`/app/s/${s.id}`} className={buttonClass.primary}>
+                  {status && status !== 'saved' ? 'Continue application' : 'Start application'}<ArrowRight size={16} />
+                </Link>
+                <button onClick={toggleSave} aria-pressed={saved} className={buttonClass.secondary}>
+                  {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}{saved ? 'Saved' : 'Save for later'}
+                </button>
+              </>
+            ) : (
+              <Link to={`/app/s/${s.id}`} className={buttonClass.secondary}>See why and what it would take<ArrowRight size={16} /></Link>
+            )}
           </div>
         </div>
 

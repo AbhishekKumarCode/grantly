@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { cloneElement, useId, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { Logo, Footer } from '../components/Layout'
@@ -12,7 +12,8 @@ const choice = (on) => `cursor-pointer rounded-lg border-[1.5px] p-3 text-left t
 const why = (t) => <p className="mt-1.5 text-[13px] text-faint">Why we ask: {t}</p>
 
 function Field({ label, children, hint }) {
-  return <div><label className="mb-1.5 block text-[15px] font-semibold">{label}</label>{children}{hint && why(hint)}</div>
+  const id = useId()
+  return <div><label htmlFor={id} className="mb-1.5 block text-[15px] font-semibold">{label}</label>{cloneElement(children, { id })}{hint && why(hint)}</div>
 }
 
 export default function Onboarding() {
@@ -33,7 +34,7 @@ export default function Onboarding() {
   const total = useCountUp(live.total, 500)
 
   const valid1 = p.name.trim() && p.course.trim()
-  const finish = () => { dispatch({ type: 'profile', patch: { ...p, name: p.name.trim() } }); notify(`You are in, ${p.name.trim().split(' ')[0]}. Let\u2019s go find your money.`, { confetti: true }); nav('/app') }
+  const finish = () => { dispatch({ type: 'profile', patch: { ...p, name: p.name.trim() } }); notify(profile ? 'Profile updated. Your matches are refreshed.' : `You are in, ${p.name.trim().split(' ')[0]}. Let\u2019s go find your money.`, profile ? undefined : { confetti: true }); nav('/app') }
   const next = () => (step < 3 ? setStep(step + 1) : finish())
   const titles = ['Your studies', 'Your background', 'What you need most']
 
@@ -138,7 +139,7 @@ export default function Onboarding() {
               )}
 
               <div className="flex flex-col-reverse items-stretch justify-between gap-3 border-t border-line pt-6 sm:flex-row sm:items-center">
-                {step > 1 ? <button type="button" onClick={() => setStep(step - 1)} className={buttonClass.secondary}><ArrowLeft size={16} />Back</button> : <Link to="/" className={buttonClass.ghost}>Cancel</Link>}
+                {step > 1 ? <button type="button" onClick={() => setStep(step - 1)} className={buttonClass.secondary}><ArrowLeft size={16} />Back</button> : <Link to={profile ? '/app' : '/'} className={buttonClass.ghost}>Cancel</Link>}
                 <button type="submit" disabled={step === 1 && !valid1} className={buttonClass.primary}>
                   {step < 3 ? 'Continue' : `Show my ${live.count} matches`}<ArrowRight size={16} />
                 </button>

@@ -58,6 +58,7 @@ export default function Discover() {
         </label>
       </div>
 
+      <h2 className="sr-only">Scholarships</h2>
       <div className="mt-6 space-y-4">
         {rows.length === 0
           ? <Empty title="Nothing here. We looked twice." body="Try a longer deadline window or a lower minimum award."><button className="h-11 rounded-lg border-[1.5px] border-line-strong bg-white px-5 text-sm font-semibold" onClick={() => { setQ(''); setKind('all'); setAmount(0); setWithin(0) }}>Clear filters</button></Empty>

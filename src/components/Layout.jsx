@@ -3,6 +3,7 @@ import { NavLink, Outlet, Link, Navigate, useLocation, useNavigate } from 'react
 import { Bell, Search, UserRound, RotateCcw } from 'lucide-react'
 import Palette from './Palette'
 import { dayMonth, daysLabel } from '../lib/format'
+import { BY_ID } from '../data/scholarships'
 import { useStore } from '../store'
 import { Toast } from './ui'
 
@@ -20,7 +21,7 @@ function Popover({ label, trigger, children, align = 'right' }) {
   }, [open])
   return (
     <div ref={ref} className="relative">
-      <button aria-label={label} aria-expanded={open} onClick={() => setOpen((o) => !o)} className="rounded-lg">{trigger}</button>
+      <button aria-label={label} aria-expanded={open} aria-haspopup="true" onClick={() => setOpen((o) => !o)} className="rounded-lg">{trigger}</button>
       {open && <div onClick={() => setOpen(false)} className={`absolute top-full z-50 mt-2 w-80 rounded-2xl border border-line-strong bg-white p-2 shadow-xl ${align === 'right' ? 'right-0' : 'left-0'}`}>{children}</div>}
     </div>
   )
@@ -55,7 +56,7 @@ export default function Layout() {
   const [pal, setPal] = useState(false)
   const loc = useLocation()
   const nav = useNavigate()
-  useEffect(() => { document.title = (TITLES[loc.pathname] ?? 'Scholarship') + ' · Grantly' }, [loc.pathname])
+  useEffect(() => { document.title = (TITLES[loc.pathname] ?? BY_ID[loc.pathname.split('/').pop()]?.name ?? 'Scholarship') + ' · Grantly' }, [loc.pathname])
   useEffect(() => {
     const k = (e) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setPal((v) => !v) } }
     window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k)
@@ -81,8 +82,8 @@ export default function Layout() {
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setPal(true)} aria-label="Search (Ctrl K)" className="flex h-10 items-center gap-2 rounded-lg border-[1.5px] border-line-strong bg-white px-3 text-sm text-faint hover:border-ink">
-              <Search size={16} /><span className="hidden lg:inline">Search</span><kbd className="hidden rounded border border-line-strong px-1.5 text-[11px] lg:inline">Ctrl K</kbd>
+            <button onClick={() => setPal(true)} className="flex h-10 items-center gap-2 rounded-lg border-[1.5px] border-line-strong bg-white px-3 text-sm text-faint hover:border-ink">
+              <Search size={16} aria-hidden /><span className="sr-only lg:not-sr-only">Search</span><kbd className="hidden rounded border border-line-strong px-1.5 text-[11px] lg:inline">Ctrl K</kbd>
             </button>
             <Popover label={`${urgent} deadlines in the next 10 days`} trigger={
               <span className="relative block rounded-lg p-2 text-muted hover:bg-paper"><Bell size={20} />
@@ -96,8 +97,8 @@ export default function Layout() {
                 </Link>
               ))}
             </Popover>
-            <Popover label="Account menu" trigger={
-              <span className="flex items-center gap-2.5 rounded-lg p-1 hover:bg-paper">
+            <Popover trigger={
+              <span className="flex items-center gap-2.5 rounded-lg p-1 hover:bg-paper"><span className="sr-only">Account menu:</span>
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-xs font-bold text-white">{initials}</span>
                 <span className="hidden text-left leading-tight lg:block"><span className="block text-sm font-semibold">{profile.name}</span><span className="block text-xs text-faint">{profile.course}</span></span>
               </span>}>

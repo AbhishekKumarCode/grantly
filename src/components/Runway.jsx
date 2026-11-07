@@ -72,9 +72,10 @@ export default function Runway({ items, apps = {}, interactive = true }) {
           const color = done ? 'bg-forest' : u === 'urgent' ? 'bg-coral' : u === 'soon' ? 'bg-primary' : 'bg-ink'
           const top = lv * LEVEL_GAP
           return (
-            <Tag key={m.s.id} role="listitem" {...(interactive ? { to: `/app/s/${m.s.id}` } : {})} title={`${m.s.name}: ${m.s.days} days left`}
-              className="pin group absolute block outline-offset-4 hover:z-20 focus-visible:z-20"
+            <div key={m.s.id} role="listitem" className="pin absolute hover:z-20 focus-within:z-20"
               style={{ left: x, top, width: TAG_W, height: BASE - top, animationDelay: `${250 + i * 90}ms` }}>
+            <Tag {...(interactive ? { to: `/app/s/${m.s.id}` } : {})} title={`${m.s.name}: ${m.s.days} days left`}
+              className="group block h-full w-full outline-offset-4">
               {/* stem sits on the pin's date, tag hangs to its right */}
               <div className={`absolute left-0 z-0 w-0.5 ${color}`} style={{ top: 0, height: '100%' }} />
               <div className={`absolute bottom-0 left-0 z-0 h-3 w-3 -translate-x-[5px] translate-y-1/2 rounded-full ring-4 ring-paper ${color}`} />
@@ -84,6 +85,7 @@ export default function Runway({ items, apps = {}, interactive = true }) {
                 <div className="num text-[11px] leading-tight text-faint">{dayMonth(m.s.deadline)}{done ? ' · done' : ` · ${m.s.days}d`}</div>
               </div>
             </Tag>
+            </div>
           )
         })}
       </div>
