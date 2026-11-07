@@ -1,10 +1,11 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { Bookmark, BookmarkCheck, ArrowRight, Hourglass, CalendarDays } from 'lucide-react'
 import { Chip, Seal, Check2, buttonClass } from './ui'
 import { useStore } from '../store'
 import { inr, dayMonth, urgency } from '../lib/format'
 
-export default function Ticket({ m, showChecks = 2 }) {
+function Ticket({ m, showChecks = 2 }) {
   const { s, checks, eligible, score } = m
   const { apps, dispatch, notify } = useStore()
   const status = apps[s.id]?.status
@@ -67,3 +68,5 @@ export default function Ticket({ m, showChecks = 2 }) {
     </article>
   )
 }
+
+export default memo(Ticket)

@@ -1,6 +1,9 @@
+/** @param {number} n */
 const pad = (n) => String(n).padStart(2, '0')
+/** @param {Date} d */
 const stamp = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`
 
+/** @param {{ id: string, name: string, provider: string, deadline: Date }[]} list @param {string} [filename] */
 export function downloadICS(list, filename = 'grantly-deadlines.ics') {
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Grantly//EN']
   list.forEach((s) => {

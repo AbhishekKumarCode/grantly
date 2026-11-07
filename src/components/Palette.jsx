@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, CornerDownLeft, LayoutDashboard, Compass, Kanban, FolderOpen } from 'lucide-react'
 import { SCHOLARSHIPS } from '../data/scholarships'
@@ -12,10 +12,13 @@ const PAGES = [
 ]
 
 export default function Palette({ open, onClose }) {
+  return open ? <PaletteDialog onClose={onClose} /> : null
+}
+
+function PaletteDialog({ onClose }) {
   const nav = useNavigate()
   const [q, setQ] = useState('')
   const [i, setI] = useState(0)
-  const input = useRef(null)
 
   const rows = useMemo(() => {
     const t = q.trim().toLowerCase()
@@ -25,9 +28,6 @@ export default function Palette({ open, onClose }) {
     return [...pages, ...sch]
   }, [q])
 
-  useEffect(() => { if (open) { setQ(''); setI(0); setTimeout(() => input.current?.focus(), 0) } }, [open])
-  useEffect(() => { setI(0) }, [q])
-  if (!open) return null
 
   const go = (r) => { nav(r.to); onClose() }
   const onKey = (e) => {
@@ -43,7 +43,7 @@ export default function Palette({ open, onClose }) {
         className="w-full max-w-xl overflow-hidden rounded-2xl border border-line-strong bg-white shadow-2xl">
         <div className="flex items-center gap-3 border-b border-line px-4">
           <Search size={18} className="text-faint" aria-hidden />
-          <input ref={input} autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search scholarships or jump to a page"
+          <input autoFocus value={q} onChange={(e) => { setQ(e.target.value); setI(0) }} placeholder="Search scholarships or jump to a page"
             aria-label="Search" maxLength={80} className="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-faint" />
           <kbd className="rounded border border-line-strong px-1.5 py-0.5 text-[11px] text-faint">Esc</kbd>
         </div>

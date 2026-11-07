@@ -1,5 +1,6 @@
 // Validate and sanitise a user-chosen file before we store anything about it.
 const MAX = 5 * 1024 * 1024
+/** @param {{ name: string, size: number } | undefined | null} f */
 export function checkFile(f) {
   if (!f) return { ok: false, msg: 'No file chosen' }
   if (!/\.(pdf|png|jpe?g|docx?)$/i.test(f.name)) return { ok: false, msg: 'Please use a PDF, image or Word file' }

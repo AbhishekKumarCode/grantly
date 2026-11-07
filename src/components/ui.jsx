@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Check, TriangleAlert } from 'lucide-react'
 import { useStore } from '../store'
 
@@ -67,11 +67,13 @@ export function Check2({ ok, children }) {
 }
 
 const CONF = ['#FFB627', '#2338C9', '#FF5A4E', '#CFE8D5', '#0E1B2C']
+const makePieces = () => Array.from({ length: 44 }, (_, i) => ({
+  c: CONF[i % CONF.length], x: (Math.random() - 0.5) * 1000, y: -260 + Math.random() * 640,
+  r: (Math.random() - 0.5) * 1000, d: Math.random() * 0.18,
+}))
+
 export function Confetti() {
-  const pieces = useMemo(() => Array.from({ length: 44 }, (_, i) => ({
-    c: CONF[i % CONF.length], x: (Math.random() - 0.5) * 1000, y: -260 + Math.random() * 640,
-    r: (Math.random() - 0.5) * 1000, d: Math.random() * 0.18,
-  })), [])
+  const [pieces] = useState(makePieces)
   if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null
   return <div aria-hidden>{pieces.map((p, i) => <span key={i} className="confetti" style={{ background: p.c, '--x': p.x + 'px', '--y': p.y + 'px', '--r': p.r + 'deg', '--d': p.d + 's' }} />)}</div>
 }

@@ -1,5 +1,11 @@
 import { SCHOLARSHIPS } from '../data/scholarships'
 
+/** @typedef {typeof SCHOLARSHIPS[number]} Scholarship */
+/** @typedef {{ name: string, institution: string, course: string, field: string, level: string, year: number, cgpa: number, state: string, category: string, income: string, gender: string, flags: string[], goals: string[] }} Profile */
+/** @typedef {{ ok: boolean, text: string }} Check */
+/** @typedef {{ s: Scholarship, checks: Check[], eligible: boolean, score: number | null }} Match */
+/** @typedef {Record<string, unknown>} Vault */
+
 export const FIELDS = [
   { id: 'engineering', label: 'Engineering and tech' },
   { id: 'science', label: 'Science' },
@@ -39,20 +45,31 @@ export const GOALS = [
   { id: 'abroad', label: 'Study or travel abroad' },
 ]
 
+/** @type {Profile} */
 export const SAMPLE_PROFILE = {
   name: 'Aarav Patel', institution: 'VJTI Mumbai', course: 'B.Tech Computer Science', field: 'engineering',
   level: 'ug', year: 2, cgpa: 8.9, state: 'MH', category: 'obc', income: 'b8', gender: 'male',
   flags: ['firstGen'], goals: ['tuition', 'laptop'],
 }
 
+/** @param {string} id */
 const fieldLabel = (id) => FIELDS.find((f) => f.id === id)?.label.toLowerCase() ?? id
+/** @param {string} id */
 const levelLabel = (id) => LEVELS.find((l) => l.id === id)?.label.toLowerCase() ?? id
+/** @param {string[]} arr */
 const joinOr = (arr) => (arr.length < 2 ? arr[0] : arr.slice(0, -1).join(', ') + ' or ' + arr.at(-1))
 
 // Returns every criterion with a plain-language verdict.
+/**
+ * @param {Scholarship} s
+ * @param {Profile} p
+ * @returns {Match}
+ */
 export function evaluate(s, p) {
   const c = s.c
+  /** @type {Check[]} */
   const checks = []
+  /** @param {boolean} ok @param {string} yes @param {string} no */
   const add = (ok, yes, no) => checks.push({ ok, text: ok ? yes : no })
 
   if (c.minCgpa != null) add(p.cgpa >= c.minCgpa,
@@ -71,7 +88,7 @@ export function evaluate(s, p) {
   if (c.states) add(c.states.includes(p.state), `You are a resident of the state`, `Only for residents of ${joinOr(c.states)}`)
   if (c.gender) add(p.gender === c.gender, `Open to women students`, `Only for women students`)
   if (c.flags) add(c.flags.some((f) => p.flags?.includes(f)),
-    `You meet the special status requirement`, `Requires: ${joinOr(c.flags.map((f) => FLAGS.find((x) => x.id === f).label.toLowerCase()))}`)
+    `You meet the special status requirement`, `Requires: ${joinOr(c.flags.map((f) => (FLAGS.find((x) => x.id === f)?.label ?? f).toLowerCase()))}`)
 
   const eligible = checks.every((k) => k.ok)
   let score = null
@@ -85,20 +102,25 @@ export function evaluate(s, p) {
   return { s, checks, eligible, score }
 }
 
+/** @param {Profile} p @returns {Match[]} */
 export function matchAll(p) {
   return SCHOLARSHIPS.map((s) => evaluate(s, p))
 }
 
+/** @param {Scholarship} s @param {Vault} vault */
 export function missingDocs(s, vault) {
   return s.docs.filter((d) => !vault[d])
 }
 
+/** @param {Match[]} matches */
 export function totalReach(matches) {
   return matches.filter((m) => m.eligible).reduce((sum, m) => sum + m.s.amount, 0)
 }
 
+/** @param {Profile} p @param {Vault} vault */
 export function profileStrength(p, vault) {
   let pts = 0
+  /** @type {(keyof Profile)[]} */
   const need = ['name', 'course', 'field', 'level', 'cgpa', 'state', 'category', 'income', 'gender']
   need.forEach((k) => { if (p[k] !== undefined && p[k] !== '') pts += 6 })
   if (p.goals?.length) pts += 6
