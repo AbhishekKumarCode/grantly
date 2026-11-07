@@ -36,7 +36,7 @@ export default function Landing() {
       <main className="mx-auto w-full max-w-7xl flex-1 px-5 pb-8 pt-10 md:px-8 md:pt-16">
         <div className="grid items-start gap-12 lg:grid-cols-12">
           <div className="lg:col-span-6">
-            <h1 className="text-[40px] font-extrabold leading-[1.05] sm:text-6xl">
+            <h1 className="text-[36px] font-extrabold leading-[1.05] sm:text-6xl">
               See every rupee you qualify for, and the day each one closes.
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted">

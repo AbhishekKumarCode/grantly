@@ -42,7 +42,7 @@ export default function Onboarding() {
       <header className="border-b border-line bg-white">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-8">
           <Logo />
-          <span className="text-sm text-muted">Takes under 2 minutes. Stored only in this browser.</span>
+          <span className="hidden text-sm text-muted sm:inline">Takes under 2 minutes. Stored only in this browser.</span>
         </div>
       </header>
 

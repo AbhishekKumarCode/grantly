@@ -33,7 +33,7 @@ export default function Tracker() {
         <button className={buttonClass.secondary} disabled={!live.length} onClick={() => { downloadICS(live.map((i) => i.s)); notify('Calendar file ready. Deadlines now live on your phone.') }}><CalendarPlus size={16} />Add open deadlines to calendar</button>
       </div>
 
-      <div className="mt-8 flex snap-x gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:overflow-visible">
+      <div className="relative mt-8 flex snap-x gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:overflow-visible">
         {COLS.map(([key, title, hint]) => {
           const col = items.filter((i) => i.status === key).sort((a, b) => a.s.days - b.s.days)
           return (
